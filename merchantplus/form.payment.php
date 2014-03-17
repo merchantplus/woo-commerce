@@ -9,7 +9,7 @@
 <p class="form-row">
     <label>Card Number <span class="required">*</span></label>
     
-    <input class="input-text" type="text" size="19" maxlength="19" name="billing_credircard" />
+    <input class="input-text" type="text" size="19" maxlength="19" name="billing_creditcard" />
 </p>
 <p class="form-row form-row-first">
     <label>Card Type <span class="required">*</span></label>

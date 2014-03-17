@@ -128,7 +128,7 @@ class dinkum_MerchantPlus extends WC_Payment_Gateway {
     if (!$this->isCreditCardNumber($_POST['billing_creditcard'])) 
       $woocommerce->add_error(__('(Credit Card Number) is not valid.', 'woocommerce')); 
     
-    if (!$this->isCorrectCardType($_POST['billing_cardtype']))    
+    if (!$this->isCorrectCardType($_POST['billing_creditcard']))    
       $woocommerce->add_error(__('(Card Type) is not valid.', 'woocommerce')); 
 
     if (!$this->isCorrectExpireDate($_POST['billing_expdatemonth'], $_POST['billing_expdateyear']))    
@@ -314,7 +314,17 @@ class dinkum_MerchantPlus extends WC_Payment_Gateway {
 
   private function isCorrectCardType($toCheck)
   {
-    return $toCheck AND in_array($toCheck, $this->acceptableCards);
+    $cardtyp ='';
+    if(preg_match("/^([4]{1})([0-9]{12,15})$/", $toCheck)){
+      $cardtyp = 'Visa';
+    }elseif(preg_match("/^5[1-5]\d{2}-?\d{4}-?\d{4}-?\d{4}$/", $toCheck)){
+      $cardtyp = 'MasterCard';
+    }elseif(preg_match("/^6011-?\d{4}-?\d{4}-?\d{4}$/", $toCheck)){
+      $cardtyp = 'Discover';
+    }elseif(preg_match("/^3[47]\d{13}$/", $toCheck)){
+      $cardtyp = 'American Express';
+    }
+    return $cardtyp AND in_array($cardtyp, $this->acceptableCards); 
   }    
 
   private function isCorrectExpireDate($month, $year) 
