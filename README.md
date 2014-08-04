@@ -12,7 +12,7 @@ Installation of this plugin is fairly simple. To install a WordPress Plugin auto
     - Login to your WordPress admin site and select click on the "Plugins" menu
     - From the submenus under the "Plugins" menu select "Add New"
     - Select the "Upload" option from the links on the top of the "Install Plugins" page
-    - Press the "Browser" button to select the merchantplus.navigate.zip file and press "Install Now" button
+    - Press the "Browser" button to select the plugin file and press "Install Now" button
     - Once installed go to your "Plugins" page again and activate the newly uploaded plugin
 
 2. Merchant Plus API Credentials
