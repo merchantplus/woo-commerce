@@ -39,7 +39,7 @@
 				$this->login            = $this->settings['login_id'];
 				$this->mode             = $this->settings['working_mode'];
 				$this->transaction_key  = $this->settings['transaction_key'];
-				$this->method			 = $this->settings['transaction_method'];
+				$this->method			= $this->settings['transaction_method'];
 				$this->success_message  = $this->settings['success_message'];
 				$this->failed_message   = $this->settings['failed_message'];
 				$this->gateway_url      = 'https://gateway.merchantplus.com/cgi-bin/PAWebClient.cgi';         
@@ -167,14 +167,14 @@
 				global $woocommerce;
 				
 				if (!$this->isCreditCardNumber($_POST['x_card_num'])) 
-				$woocommerce->add_error(__('(Credit Card Number) is not valid.', 'merchantplus')); 
+				wc_add_notice(__('(Credit Card Number) is not valid.', 'merchantplus')); 
 				
 				
 				if (!$this->isCorrectExpireDate($_POST['x_exp_m'].$_POST['x_exp_y']))    
-				$woocommerce->add_error(__('(Card Expiry Date) is not valid.', 'merchantplus')); 
+				wc_add_notice(__('(Card Expiry Date) is not valid.', 'merchantplus')); 
 				
 				if (!$this->isCCVNumber($_POST['x_card_code'])) 
-				$woocommerce->add_error(__('(Card Verification Number) is not valid.', 'merchantplus')); 
+				wc_add_notice(__('(Card Verification Number) is not valid.', 'merchantplus')); 
 			}
 			
 			/*
@@ -256,7 +256,7 @@
 				$order = new WC_Order($order_id);       
 				
 				$params = $this->generate_merchantplus_params($order);
-				
+
 				$response = wp_remote_post($this->gateway_url, array( 
 																'body' => http_build_query($params, '', '&'),
 																'method' => 'POST',
@@ -285,25 +285,30 @@
 					}else{
 						$error = $this->error_status();								
 						$order->add_order_note($this->failed_message .$error[$data[0]][$data[2]] );
-						$woocommerce->add_error(__('(Transaction Error) '. $error[$data[0]][$data[2]]." ".$data[3], 'merchantplus'));
+						wc_add_notice(__('(Transaction Error) '. $error[$data[0]][$data[2]]." ".$data[3], 'merchantplus'));
 					}
 					
 				}else{					
 					$order->add_order_note($this->failed_message);
 					$order->update_status('failed');					
-					$woocommerce->add_error(__('(Transaction Error) Error processing payment.', 'merchantplus')); 
+					// wc_add_notice(__('(Transaction Error) Error processing payment.', 'merchantplus')); 
+					wc_add_notice(__('(Transaction Error) Error processing payment.', 'error')); 
 				}				
 			}
 			
 			public function generate_merchantplus_params($order)
 			{
-				
+				if($this->mode == 'true'){
+					$test = 'TRUE';
+				}else{
+					$test = 'FALSE';
+				}
 				// Merchant Info
 				$mp_arg['x_login']             = $this->login;
 				$mp_arg['x_tran_key']          = $this->transaction_key;
 				
 				// TEST TRANSACTION
-				$mp_arg['x_test_request']      = ($this->mode?'TRUE':'FALSE');
+				$mp_arg['x_test_request']      = $test;
 				
 				// AIM Head
 				$mp_arg['x_version']           = '3.1';
